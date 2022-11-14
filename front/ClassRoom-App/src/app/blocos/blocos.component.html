@@ -1,33 +1,56 @@
 <h2>Blocos</h2>
 <hr>
 
-<form action="" class="form-inline">
+<div class="form-inline">
   <div class="form-group mb-2">
-    <input type="text" class="form-control mr-2" placeholder="buscar">
-    <button class="btn btn-outline-success">Buscar</button>
+    <label class="mr-2">Filtro:</label>
+    <input
+      type="text"
+      class="form-control mr-2"
+      placeholder="buscar"
+      [(ngModel)]="filtroLista"
+    >
   </div>
-</form>
+</div>
 <table class="table table-striped">
   <thead class="thead-dark">
     <tr>
+      <th>
+        <button
+          type="button" class="btn btn-outline-light btn-sm" (click)="showImg = !showImg"> {{showImg ? 'Exibir' : 'Ocultar'}} </button>
+      </th>
       <th>#</th>
-      <th>Imagem</th>
       <th>Nome</th>
       <th>Local</th>
       <th>Status</th>
       <th>Aulas</th>
-      <th>Opções</th>
     </tr>
   </thead>
-  <tbody>
-    <tr *ngFor="let bloco of blocos">
+  <tbody *ngIf="blocosFiltrados || blocosFiltrados.length">
+    <tr *ngFor="let bloco of blocosFiltrados">
+      <td>
+        <!-- <img src="/assets/{{bloco.imageURL}}" alt="image"> -->
+        <img
+          src="/assets/placeholder.png"
+          alt="image"
+          [collapse]="showImg"
+          [isAnimated]="true"
+          [style.width.px]="widthImg"
+          [style.margin.px]="marginImg"
+        >
+      </td>
       <td>{{bloco.id}}</td>
-      <td>{{bloco.imageURL}}</td>
       <td>{{bloco.nome}}</td>
       <td>{{bloco.local}}</td>
       <td>{{bloco.statusBloco}}</td>
-      <td></td>
-      <td></td>
+      <td *ngIf="bloco.aulas"><span *ngFor="let aula of bloco.aulas">| {{aula.nome}} |</span></td>
     </tr>
   </tbody>
+  <tfoot *ngIf="!blocosFiltrados || !blocosFiltrados.length">
+    <tr>
+      <td colspan="6" class="text-center">
+        <h4>Nenhum bloco encontrado</h4>
+      </td>
+    </tr>
+  </tfoot>
 </table>
