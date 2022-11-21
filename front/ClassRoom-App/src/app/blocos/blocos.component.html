@@ -17,13 +17,19 @@
     <tr>
       <th>
         <button
-          type="button" class="btn btn-outline-light btn-sm" (click)="showImg = !showImg"> {{showImg ? 'Exibir' : 'Ocultar'}} </button>
+          type="button"
+          class="btn btn-outline-light btn-sm"
+          (click)="showImg = !showImg">
+            <i class="{{showImg ? 'fa fa-eye' : 'fa fa-eye-slash'}}"></i>
+            {{showImg ? 'Exibir' : 'Ocultar'}}
+        </button>
       </th>
       <th>#</th>
       <th>Nome</th>
       <th>Local</th>
       <th>Status</th>
       <th>Aulas</th>
+      <th>Opções</th>
     </tr>
   </thead>
   <tbody *ngIf="blocosFiltrados || blocosFiltrados.length">
@@ -43,14 +49,30 @@
       <td>{{bloco.nome}}</td>
       <td>{{bloco.local}}</td>
       <td>{{bloco.statusBloco}}</td>
-      <td *ngIf="bloco.aulas"><span *ngFor="let aula of bloco.aulas">| {{aula.nome}} |</span></td>
+      <td><span *ngIf="bloco.aulas[0]">{{bloco.aulas[0].nome}}</span></td>
+      <td>
+        <button class="btn btn-primary btn-sm mr-2" tooltip="Editar">
+          <i class="fa fa-edit"></i>
+        </button>
+        <button class="btn btn-danger btn-sm" tooltip="Excluir" (click)="openModal(template)">
+          <i class="fa fa-trash"></i>
+        </button>
+      </td>
     </tr>
   </tbody>
   <tfoot *ngIf="!blocosFiltrados || !blocosFiltrados.length">
     <tr>
-      <td colspan="6" class="text-center">
+      <td colspan="7" class="text-center">
         <h4>Nenhum bloco encontrado</h4>
       </td>
     </tr>
   </tfoot>
 </table>
+
+<ng-template #template>
+  <div class="modal-body text-center">
+    <p>Você tem certeza?</p>
+    <button type="button" class="btn btn-default" (click)="confirm()" >Sim</button>
+    <button type="button" class="btn btn-primary" (click)="decline()" >Não</button>
+  </div>
+</ng-template>
