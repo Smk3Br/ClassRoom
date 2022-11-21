@@ -4,8 +4,8 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 
-import { Bloco } from '../models/Bloco';
-import { BlocoService } from '../services/bloco.service';
+import { Bloco } from 'src/app/models/Bloco';
+import { BlocoService } from 'src/app/services/bloco.service';
 
 @Component({
   selector: 'app-blocos',

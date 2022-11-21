@@ -13,11 +13,15 @@ import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BlocosComponent } from './blocos/blocos.component';
-import { AulasComponent } from './aulas/aulas.component';
-import { NavComponent } from './nav/nav.component';
+import { BlocosComponent } from './components/blocos/blocos.component';
+import { AulasComponent } from './components/aulas/aulas.component';
+import { NavComponent } from './shared/nav/nav.component';
+import { TitleComponent } from './shared/title/title.component';
 import { BlocoService } from './services/bloco.service';
 import { DateTimeFormatPipe } from './helpers/DateTimeFormat.pipe';
+import { ContatosComponent } from './components/contatos/contatos.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { PerfilComponent } from './components/perfil/perfil.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +29,10 @@ import { DateTimeFormatPipe } from './helpers/DateTimeFormat.pipe';
       BlocosComponent,
       AulasComponent,
       NavComponent,
+      TitleComponent,
+      ContatosComponent,
+      DashboardComponent,
+      PerfilComponent,
       DateTimeFormatPipe
    ],
   imports: [
