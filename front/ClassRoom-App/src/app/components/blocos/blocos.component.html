@@ -1,77 +1,8 @@
-<app-title [titulo]="'Blocos'"></app-title>
+<app-title
+  [titulo]="'Blocos'"
+  [subtitulo]="'visualizar blocos'"
+  [iconClass]="'fa fa-th-large'"
+  [botaoListar]="true"
+></app-title>
 
-<div class="form-inline">
-  <div class="form-group mb-2">
-    <label class="mr-2">Filtro:</label>
-    <input
-      type="text"
-      class="form-control mr-2"
-      placeholder="buscar"
-      [(ngModel)]="filtroLista"
-    >
-  </div>
-</div>
-<table class="table table-striped">
-  <thead class="thead-dark">
-    <tr>
-      <th>
-        <button
-          type="button"
-          class="btn btn-outline-light btn-sm"
-          (click)="showImg = !showImg">
-            <i class="{{showImg ? 'fa fa-eye' : 'fa fa-eye-slash'}}"></i>
-            {{showImg ? 'Exibir' : 'Ocultar'}}
-        </button>
-      </th>
-      <th>#</th>
-      <th>Nome</th>
-      <th>Local</th>
-      <th>Status</th>
-      <th>Aulas</th>
-      <th>Opções</th>
-    </tr>
-  </thead>
-  <tbody *ngIf="blocosFiltrados || blocosFiltrados.length">
-    <tr *ngFor="let bloco of blocosFiltrados">
-      <td>
-        <!-- <img src="/assets/{{bloco.imageURL}}" alt="image"> -->
-        <img
-          src="/assets/placeholder.png"
-          alt="image"
-          [collapse]="showImg"
-          [isAnimated]="true"
-          [style.width.px]="widthImg"
-          [style.margin.px]="marginImg"
-        >
-      </td>
-      <td>{{bloco.id}}</td>
-      <td>{{bloco.nome}}</td>
-      <td>{{bloco.local}}</td>
-      <td>{{bloco.statusBloco}}</td>
-      <td><span *ngIf="bloco.aulas[0]">{{bloco.aulas[0].nome}}</span></td>
-      <td>
-        <button class="btn btn-primary btn-sm mr-2" tooltip="Editar">
-          <i class="fa fa-edit"></i>
-        </button>
-        <button class="btn btn-danger btn-sm" tooltip="Excluir" (click)="openModal(template)">
-          <i class="fa fa-trash"></i>
-        </button>
-      </td>
-    </tr>
-  </tbody>
-  <tfoot *ngIf="!blocosFiltrados || !blocosFiltrados.length">
-    <tr>
-      <td colspan="7" class="text-center">
-        <h4>Nenhum bloco encontrado</h4>
-      </td>
-    </tr>
-  </tfoot>
-</table>
-
-<ng-template #template>
-  <div class="modal-body text-center">
-    <p>Você tem certeza?</p>
-    <button type="button" class="btn btn-default" (click)="confirm()" >Sim</button>
-    <button type="button" class="btn btn-primary" (click)="decline()" >Não</button>
-  </div>
-</ng-template>
+<router-outlet></router-outlet>

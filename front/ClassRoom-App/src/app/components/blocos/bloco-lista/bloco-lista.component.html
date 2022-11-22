@@ -1,0 +1,86 @@
+
+<div class="card rounded shadow p-3">
+
+  <div class="d-flex">
+    <div class="flex-fill pr-1">
+      <div class="input-group mb-2">
+        <div class="input-group-prepend">
+          <div class="input-group-text">Filtro: </div>
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Filtrar por Bloco"
+          [(ngModel)]="filtroLista"
+        >
+      </div>
+    </div>
+    <div>
+      <a class="d-flex btn btn-outline-primary" routerLink="/blocos/detalhe">
+        <i class="fa fa-plus-circle my-1"></i>
+        <b class="ml-1 d-none d-sm-block">Novo</b>
+      </a>
+    </div>
+  </div>
+  <table class="table table-striped table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th class="d-none d-md-table-cell">
+          <button
+            type="button"
+            class="btn btn-outline-light btn-sm"
+            (click)="showImg = !showImg">
+              <i class="{{showImg ? 'fa fa-eye' : 'fa fa-eye-slash'}}"></i>
+              {{showImg ? 'Exibir' : 'Ocultar'}}
+          </button>
+        </th>
+        <th>#</th>
+        <th>Nome</th>
+        <th>Local</th>
+        <th class="d-none d-md-table-cell">Status</th>
+        <th>Aulas</th>
+        <th>Opções</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="blocosFiltrados || blocosFiltrados.length">
+      <tr *ngFor="let bloco of blocosFiltrados" (click)="detalheBloco(bloco.id)">
+        <td class="d-none d-md-table-cell">
+          <!-- <img src="/assets/{{bloco.imageURL}}" alt="image"> -->
+          <img
+            src="/assets/placeholder.png"
+            alt="image"
+            [collapse]="showImg"
+            [isAnimated]="true"
+            [style.width.px]="widthImg"
+            [style.margin.px]="marginImg"
+          >
+        </td>
+        <td>{{bloco.id}}</td>
+        <td>{{bloco.nome}}</td>
+        <td>{{bloco.local}}</td>
+        <td class="d-none d-md-table-cell">{{bloco.statusBloco}}</td>
+        <td><span *ngIf="bloco.aulas[0]">{{bloco.aulas[0].nome}}</span></td>
+        <td>
+          <button class="btn btn-danger btn-lg" tooltip="Excluir" (click)="openModal(template)">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot *ngIf="!blocosFiltrados || !blocosFiltrados.length">
+      <tr>
+        <td colspan="7" class="text-center">
+          <h4>Nenhum bloco encontrado</h4>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<ng-template #template>
+  <div class="modal-body text-center">
+    <p>Você tem certeza?</p>
+    <button type="button" class="btn btn-default" (click)="confirm()" >Sim</button>
+    <button type="button" class="btn btn-primary" (click)="decline()" >Não</button>
+  </div>
+</ng-template>

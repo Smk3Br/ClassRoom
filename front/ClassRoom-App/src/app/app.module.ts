@@ -21,7 +21,12 @@ import { BlocoService } from './services/bloco.service';
 import { DateTimeFormatPipe } from './helpers/DateTimeFormat.pipe';
 import { ContatosComponent } from './components/contatos/contatos.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { PerfilComponent } from './components/perfil/perfil.component';
+import { PerfilComponent } from './components/user/perfil/perfil.component';
+import { BlocoDetalheComponent } from './components/blocos/bloco-detalhe/bloco-detalhe.component';
+import { BlocoListaComponent } from './components/blocos/bloco-lista/bloco-lista.component';
+import { UserComponent } from './components/user/user.component';
+import { LoginComponent } from './components/user/login/login.component';
+import { RegistrationComponent } from './components/user/registration/registration.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +38,12 @@ import { PerfilComponent } from './components/perfil/perfil.component';
       ContatosComponent,
       DashboardComponent,
       PerfilComponent,
-      DateTimeFormatPipe
+      BlocoDetalheComponent,
+      BlocoListaComponent,
+      DateTimeFormatPipe,
+      UserComponent,
+      LoginComponent,
+      RegistrationComponent
    ],
   imports: [
     BrowserModule,
