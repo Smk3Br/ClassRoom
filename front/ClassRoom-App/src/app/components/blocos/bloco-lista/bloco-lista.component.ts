@@ -17,6 +17,7 @@ export class BlocoListaComponent implements OnInit {
   modalRef!: BsModalRef;
   public blocos: Bloco[] = [];
   public blocosFiltrados: any = [];
+  public blocoId: number;
 
   public widthImg: number = 150;
   public marginImg: number = 2;
@@ -50,11 +51,11 @@ export class BlocoListaComponent implements OnInit {
 
   public ngOnInit() {
     this.spinner.show();
-    this.getBlocos();
+    this.carregarBlocos();
   }
 
-  public getBlocos(): void {
-    const observer = {
+  public carregarBlocos(): void {
+    this.blocoService.getBloco().subscribe({
       next: (blocos: Bloco[]) => {
         this.blocos = blocos
         this.blocosFiltrados = this.blocos
@@ -64,18 +65,35 @@ export class BlocoListaComponent implements OnInit {
         this.toastr.error('Não foi possível carregar os blocos', 'Erro');
       },
       complete: () => {this.spinner.hide();}
-    }
-
-    this.blocoService.getBloco().subscribe(observer);
+    });
   }
 
-  openModal(template: TemplateRef<any>): void {
+  openModal(event: any, template: TemplateRef<any>, blocoId: number): void {
+    event.stopPropagation();
+    this.blocoId = blocoId;
     this.modalRef = this.modalService.show(template, {class: 'modal-sm'});
   }
 
   confirm(): void {
     this.modalRef.hide();
-    this.toastr.success('Bloco deletado com sucesso!', 'Deletado');
+    this.spinner.show();
+
+    this.blocoService.deleteBloco(this.blocoId).subscribe(
+      (result: any) => {
+        if(result.message === 'Deletado'){
+          this.toastr.success('Bloco deletado com sucesso!', 'Deletado');
+          this.spinner.hide();
+          this.carregarBlocos();
+        }
+      },
+      (error: any) => {
+        this.toastr.error(`Erro ao tentar deletar o bloco ${this.blocoId}`, 'Erro!')
+        this.spinner.hide();
+        console.log(error);
+      },
+      () => {this.spinner.hide();}
+    );
+
   }
 
   decline(): void {

@@ -59,9 +59,9 @@
         <td>{{bloco.nome}}</td>
         <td>{{bloco.local}}</td>
         <td class="d-none d-md-table-cell">{{bloco.statusBloco}}</td>
-        <td><span *ngIf="bloco.aulas[0]">{{bloco.aulas[0].nome}}</span></td>
+        <td>{{bloco.aulas[0]?.nome}}</td>
         <td>
-          <button class="btn btn-danger btn-lg" tooltip="Excluir" (click)="openModal(template)">
+          <button class="btn btn-danger btn-lg" tooltip="Excluir" (click)="openModal($event, template, bloco.id)">
             <i class="fa fa-trash"></i>
           </button>
         </td>
@@ -79,7 +79,7 @@
 
 <ng-template #template>
   <div class="modal-body text-center">
-    <p>Você tem certeza?</p>
+    <p>Tem certeza que deseja excluir o bloco de código {{this.blocoId}}?</p>
     <button type="button" class="btn btn-default" (click)="confirm()" >Sim</button>
     <button type="button" class="btn btn-primary" (click)="decline()" >Não</button>
   </div>

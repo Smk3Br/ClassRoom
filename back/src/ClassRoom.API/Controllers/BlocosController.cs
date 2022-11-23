@@ -121,7 +121,7 @@ namespace ClassRoom.API.Controllers
         if(bloco == null) return NoContent();       
 
         return await _blocoService.DeleteBloco(id) ?
-            Ok("Deletado") :
+            Ok(new {message = "Deletado"}) :
             throw new Exception("Deu ruim");
       }
       catch (Exception ex)
