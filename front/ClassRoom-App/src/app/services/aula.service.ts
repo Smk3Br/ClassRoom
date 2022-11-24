@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Aula } from '@app/models/Aula';
+import { environment } from '@environments/environment';
 import { Observable, take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AulaService {
-  baseURL = 'https://localhost:5001/api/Aulas'
+  baseURL = environment.apiURL + 'api/Aulas'
 
   constructor(private http: HttpClient) { }
 

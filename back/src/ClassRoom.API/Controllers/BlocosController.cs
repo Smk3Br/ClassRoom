@@ -6,7 +6,9 @@ using ClassRoom.Application.Contratos;
 using Microsoft.AspNetCore.Http;
 using ClassRoom.Application.Dtos;
 using System.Collections.Generic;
-
+using System.IO;
+using System.Linq;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ClassRoom.API.Controllers
 {
@@ -14,11 +16,13 @@ namespace ClassRoom.API.Controllers
     [Route("api/[controller]")]   
     public class BlocosController : ControllerBase
     {
+    private readonly IWebHostEnvironment _hostEnvironment;
 
     private readonly IBlocoService _blocoService;
-    public BlocosController(IBlocoService blocoService)
+    public BlocosController(IBlocoService blocoService, IWebHostEnvironment hostEnvironment)
     {
       _blocoService= blocoService;
+      _hostEnvironment = hostEnvironment;
     }  
     
     [HttpGet]
@@ -93,6 +97,33 @@ namespace ClassRoom.API.Controllers
       }
     }
 
+    [HttpPost("upload-image/{blocoId}")]
+    public async Task<IActionResult> UploadImage(int blocoId)
+    {
+      try
+      {
+          var bloco = await _blocoService.GetAllBlocoByIdAsync(blocoId);
+          if(bloco == null) return NoContent();
+
+          var file = Request.Form.Files[0];
+          
+          if(file.Length > 0)
+          {
+            DeleteImage(bloco.ImageURL);
+            bloco.ImageURL = await SaveImage(file);
+          }
+          var BlocoRetorno = await _blocoService.UpdateBloco(blocoId, bloco);
+
+          return Ok(BlocoRetorno);
+      }
+      catch (Exception ex)
+      {
+          
+          return this.StatusCode(StatusCodes.Status500InternalServerError, 
+          $"Erro ao tentar adicionar blocos. Erro {ex.Message}");
+      }
+    }
+
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, BlocoDto model)
     {
@@ -120,15 +151,49 @@ namespace ClassRoom.API.Controllers
         var bloco = await _blocoService.GetAllBlocoByIdAsync(id);
         if(bloco == null) return NoContent();       
 
-        return await _blocoService.DeleteBloco(id) ?
-            Ok(new {message = "Deletado"}) :
-            throw new Exception("Deu ruim");
+        if (await _blocoService.DeleteBloco(id)) 
+        {
+          DeleteImage(bloco.ImageURL);
+          return Ok(new {message = "Deletado"});
+        }
+        else
+        {
+          throw new Exception("Deu ruim");
+        }
       }
       catch (Exception ex)
       {         
           return this.StatusCode(StatusCodes.Status500InternalServerError, 
           $"Erro ao tentar deletar blocos. Erro {ex.Message}");
       }
+    }
+
+     [NonAction]
+    public async Task<string> SaveImage(IFormFile imageFile)
+    {
+        string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName)
+                                            .Take(10)
+                                            .ToArray()
+                                          ).Replace(' ','-');
+        
+        imageName = $"{imageName}{DateTime.UtcNow.ToString("yymmssfff")}{Path.GetExtension(imageFile.FileName)}";
+        
+        var imagePatch = Path.Combine(_hostEnvironment.ContentRootPath, @"Resources/images", imageName);
+        
+        using(var FileStream = new FileStream(imagePatch, FileMode.Create))
+        {
+          await imageFile.CopyToAsync(FileStream);
+        }
+
+        return imageName;
+    }
+    
+    [NonAction]
+    public void DeleteImage(string imageName)
+    {
+      var imagePatch = Path.Combine(_hostEnvironment.ContentRootPath, @"Resources/images", imageName);
+      if (System.IO.File.Exists(imagePatch))
+          System.IO.File.Delete(imagePatch);
     }  
   }
 }

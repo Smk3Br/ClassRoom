@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from '@environments/environment';
 import { Observable, take } from 'rxjs';
 import { Bloco } from '../models/Bloco';
 
@@ -7,7 +8,7 @@ import { Bloco } from '../models/Bloco';
   providedIn: 'root'
 })
 export class BlocoService {
-  baseURL = 'https://localhost:5001/api/Blocos'
+  baseURL = environment.apiURL + 'api/Blocos'
 
   constructor(private http: HttpClient) { }
 
@@ -44,6 +45,16 @@ export class BlocoService {
   public deleteBloco(id: number,): Observable<any> {
     return this.http
       .delete(`${this.baseURL}/${id}`)
+      .pipe(take(1));
+  }
+
+  public postUpload(blocoId: number, file: File): Observable<Bloco> {
+    const fileToUpload = file[0] as File;
+    const formData = new FormData();
+    formData.append('file', fileToUpload);
+
+    return this.http
+      .post<Bloco>(`${this.baseURL}/upload-image/${blocoId}`, formData)
       .pipe(take(1));
   }
 }

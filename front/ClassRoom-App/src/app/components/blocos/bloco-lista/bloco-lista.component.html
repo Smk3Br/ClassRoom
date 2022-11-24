@@ -45,9 +45,8 @@
     <tbody *ngIf="blocosFiltrados || blocosFiltrados.length">
       <tr *ngFor="let bloco of blocosFiltrados" (click)="detalheBloco(bloco.id)">
         <td class="d-none d-md-table-cell">
-          <!-- <img src="/assets/{{bloco.imageURL}}" alt="image"> -->
           <img
-            src="/assets/placeholder.png"
+            [src]="mostarImagem(bloco.imageURL)"
             alt="image"
             [collapse]="showImg"
             [isAnimated]="true"

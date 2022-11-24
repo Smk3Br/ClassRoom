@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { Bloco } from '@app/models/Bloco';
 import { BlocoService } from '@app/services/bloco.service';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-bloco-lista',
@@ -102,6 +103,12 @@ export class BlocoListaComponent implements OnInit {
 
   detalheBloco(id: number): void{
     this.router.navigate([`blocos/detalhe/${id}`]);
+  }
+
+  mostarImagem(imageURL: string): string {
+    return (imageURL !== '')
+              ? `${environment.apiURL}resources/images/${imageURL}`
+              : 'assets/placeholder.png'
   }
 
 }

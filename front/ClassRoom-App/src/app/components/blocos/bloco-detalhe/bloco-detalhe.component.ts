@@ -9,6 +9,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-bloco-detalhe',
@@ -23,6 +24,8 @@ export class BlocoDetalheComponent implements OnInit {
   form!: FormGroup;
   modoSalvar = 'post';
   aulaAtual = {id: 0, nome: '', indice: 0};
+  imagemURL = 'assets/upload.png';
+  file: File;
 
   get aulas(): FormArray {
     return this.form.get('aulas') as FormArray
@@ -70,6 +73,9 @@ export class BlocoDetalheComponent implements OnInit {
         (bloco: Bloco) => {
           this.bloco = {...bloco};
           this.form.patchValue(this.bloco);
+          if (this.bloco.imageURL !== '') {
+            this.imagemURL = environment.apiURL +'resources/images/'+this.bloco.imageURL;
+          }
           this.carregarAulas();
         },
         (error: any) => {
@@ -108,7 +114,7 @@ export class BlocoDetalheComponent implements OnInit {
       ]],
       local: ['', Validators.required],
       statusBloco: ['', Validators.required],
-      imageURL: ['', Validators.required],
+      imageURL: [''],
       aulas: this.fb.array([])
     })
   }
@@ -149,20 +155,20 @@ export class BlocoDetalheComponent implements OnInit {
                 ? {...this.form.value}
                 : {id: this.bloco.id, ...this.form.value};
 
-      this.blocoService[this.modoSalvar](this.bloco).subscribe({
-        next: (blocoRetorno: Bloco) => {
+      this.blocoService[this.modoSalvar](this.bloco).subscribe(
+        (blocoRetorno: Bloco) => {
           this.toastr.success('Bloco salvo com Sucesso!', 'Sucesso!');
           this.router.navigate([`blocos/detalhe/${blocoRetorno.id}`]);
         },
-        error: (error: any) => {
+        (error: any) => {
           console.log(error);
           this.spinner.hide();
           this.toastr.error('Erro ao salvar o Bloco', 'Erro!');
         },
-        complete: () => {
+        () => {
           this.spinner.hide();
         }
-      });
+      );
     }
   }
 
@@ -195,20 +201,46 @@ export class BlocoDetalheComponent implements OnInit {
     this.modalRef.hide();
     this.spinner.show();
 
-    this.aulaService.deleteAula(this.blocoId, this.aulaAtual.id).subscribe({
-      next: () => {
+    this.aulaService.deleteAula(this.blocoId, this.aulaAtual.id).subscribe(
+      () => {
         this.toastr.success('Aula deletada com sucesso!', 'Sucesso!');
         this.aulas.removeAt(this.aulaAtual.indice);
       },
-      error: (error: any) => {
+      (error: any) => {
         this.toastr.error(`Falha ao deletar Aula ${this.aulaAtual.id}`, 'Erro!')
         console.error(error);
       }
-    }).add(()=>{this.spinner.hide()})
+    ).add(()=>{this.spinner.hide()})
   };
 
   declineDeleteAula(): void{
     this.modalRef.hide();
   };
+
+  onFileChange(ev: any): void {
+    const reader = new FileReader();
+
+    reader.onload = (event: any) => this.imagemURL = event.target.result;
+
+    this.file = ev.target.files;
+    reader.readAsDataURL(this.file[0])
+
+    this.uploadImage();
+  }
+
+  uploadImage(): void{
+    this.spinner.show();
+    this.blocoService.postUpload(this.blocoId, this.file).subscribe(
+      () => {
+        this.carregarBloco();
+        this.toastr.success('Imagem atualizada com sucesso!', 'Sucesso!');
+      },
+      (error: any) => {
+        this.toastr.success('Erro ao tentar atualizar imagem!', 'Erro!');
+        console.error(error);
+      }
+    ).add(() => this.spinner.hide());
+
+  }
 
 }

@@ -14,8 +14,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using AutoMapper;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace ClassRoom.API
 {
@@ -72,6 +75,11 @@ namespace ClassRoom.API
             app.UseCors(cors => cors.AllowAnyHeader()
                                     .AllowAnyMethod()
                                     .AllowAnyOrigin());
+
+             app.UseStaticFiles(new StaticFileOptions(){
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),"Resources")),
+                RequestPath = new PathString("/Resources")
+            });
 
             app.UseEndpoints(endpoints =>
             {
