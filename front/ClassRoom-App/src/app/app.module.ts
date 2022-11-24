@@ -21,6 +21,7 @@ import { AulasComponent } from './components/aulas/aulas.component';
 import { NavComponent } from './shared/nav/nav.component';
 import { TitleComponent } from './shared/title/title.component';
 import { BlocoService } from './services/bloco.service';
+import { AulaService } from './services/aula.service'
 import { DateTimeFormatPipe } from './helpers/DateTimeFormat.pipe';
 import { ContatosComponent } from './components/contatos/contatos.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -72,7 +73,10 @@ defineLocale('pt-br', ptBrLocale);
       progressAnimation: 'increasing'
     })
   ],
-  providers: [BlocoService],
+  providers: [
+    BlocoService,
+    AulaService
+  ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
