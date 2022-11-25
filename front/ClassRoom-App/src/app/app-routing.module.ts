@@ -21,6 +21,7 @@ const routes: Routes = [
       {
         path: 'user/perfil', component: PerfilComponent
       },
+      { path: 'home', component: HomeComponent},
       { path: 'blocos', redirectTo: 'blocos/lista' },
       { path: 'blocos', component: BlocosComponent, children: [
           { path: 'detalhe/:id', component: BlocoDetalheComponent },
@@ -39,7 +40,6 @@ const routes: Routes = [
       { path: 'registration', component: RegistrationComponent}
     ]
   },
-  { path: 'home', component: HomeComponent},
   { path: '**', redirectTo: 'home', pathMatch: 'full' }
 
 ];
