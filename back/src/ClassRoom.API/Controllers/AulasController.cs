@@ -67,7 +67,7 @@ namespace ClassRoom.API.Controllers
         if(aula == null) return NoContent();       
 
         return await _aulaService.DeleteAula(aula.BlocoId, aula.Id) ?
-            Ok("Deletado") :
+            Ok(new {message = "Deletado"}) :
             throw new Exception("Deu ruim");
       }
       catch (Exception ex)

@@ -9,7 +9,7 @@
             <div class="form-group col-md-12">
               <label>Nome</label>
               <input type="text" class="form-control" [ngClass]="cssValidator(f.nome)"            formControlName="nome"
-                placeholder="Insira o Nome do Bloco" [(ngModel)]="bloco.nome">
+                placeholder="Insira o Nome do Bloco">
               <div *ngIf="f.nome.errors?.required" class="invalid-feedback">
                 O nome é obrigatório
               </div>
@@ -25,7 +25,7 @@
             <div class="form-group col-md-8">
               <label>Local</label>
               <input type="text" class="form-control" [ngClass]="cssValidator(f.local)" formControlName="local"
-                placeholder="" [(ngModel)]="bloco.local">
+                placeholder="">
               <div *ngIf="f.local.errors?.required && f.local.touched" class="invalid-feedback">
                 local é obrigatório
               </div>
@@ -33,7 +33,7 @@
             <div class="form-group col-md-4">
               <label>Status</label>
               <input type="text" class="form-control" [ngClass]="cssValidator(f.statusBloco)"
-                formControlName="statusBloco" placeholder="" [(ngModel)]="bloco.statusBloco">
+                formControlName="statusBloco" placeholder="">
               <div *ngIf="f.statusBloco.errors?.required && f.statusBloco.touched" class="invalid-feedback">
                 status é obrigatório
               </div>

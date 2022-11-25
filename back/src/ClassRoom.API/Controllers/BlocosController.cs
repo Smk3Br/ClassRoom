@@ -6,23 +6,30 @@ using ClassRoom.Application.Contratos;
 using Microsoft.AspNetCore.Http;
 using ClassRoom.Application.Dtos;
 using System.Collections.Generic;
+using ClassRoom.API.Extensions;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using System.Linq;
-using Microsoft.AspNetCore.Hosting;
 
 namespace ClassRoom.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]   
     public class BlocosController : ControllerBase
     {
-    private readonly IWebHostEnvironment _hostEnvironment;
 
     private readonly IBlocoService _blocoService;
-    public BlocosController(IBlocoService blocoService, IWebHostEnvironment hostEnvironment)
+    private readonly IAccountService _accountService;
+    private readonly IWebHostEnvironment _hostEnvironment;
+
+    public BlocosController(IBlocoService blocoService, IWebHostEnvironment hostEnvironment,
+                            IAccountService accountService)
     {
-      _blocoService= blocoService;
-      _hostEnvironment = hostEnvironment;
+            _blocoService= blocoService;
+            _hostEnvironment = hostEnvironment;
+            _accountService = accountService;
     }  
     
     [HttpGet]
@@ -30,7 +37,7 @@ namespace ClassRoom.API.Controllers
     {
       try
       {
-          var blocos = await _blocoService.GetAllBlocosAsync();
+          var blocos = await _blocoService.GetAllBlocosAsync(User.GetUserId());
           if(blocos == null) return NoContent();
 
           return Ok(blocos);
@@ -48,7 +55,7 @@ namespace ClassRoom.API.Controllers
     {
       try
       {  
-          var bloco = await _blocoService.GetAllBlocoByIdAsync(id);
+          var bloco = await _blocoService.GetAllBlocoByIdAsync(User.GetUserId(), id);
           if(bloco == null) return NoContent();
 
           return Ok(bloco);
@@ -66,7 +73,7 @@ namespace ClassRoom.API.Controllers
     {
       try
       {
-          var bloco = await _blocoService.GetAllBlocosByNomeAsync(nome);
+          var bloco = await _blocoService.GetAllBlocosByNomeAsync(User.GetUserId(), nome);
           if(bloco == null) return NoContent();
 
           return Ok(bloco);
@@ -84,7 +91,7 @@ namespace ClassRoom.API.Controllers
     {
       try
       {
-          var bloco = await _blocoService.AddBlocos(model);
+          var bloco = await _blocoService.AddBlocos(User.GetUserId(), model);
           if(bloco == null) return NoContent();
 
           return Ok(bloco);
@@ -102,7 +109,7 @@ namespace ClassRoom.API.Controllers
     {
       try
       {
-          var bloco = await _blocoService.GetAllBlocoByIdAsync(blocoId);
+          var bloco = await _blocoService.GetAllBlocoByIdAsync(User.GetUserId(), blocoId);
           if(bloco == null) return NoContent();
 
           var file = Request.Form.Files[0];
@@ -112,7 +119,7 @@ namespace ClassRoom.API.Controllers
             DeleteImage(bloco.ImageURL);
             bloco.ImageURL = await SaveImage(file);
           }
-          var BlocoRetorno = await _blocoService.UpdateBloco(blocoId, bloco);
+          var BlocoRetorno = await _blocoService.UpdateBloco(User.GetUserId(), blocoId, bloco);
 
           return Ok(BlocoRetorno);
       }
@@ -124,13 +131,14 @@ namespace ClassRoom.API.Controllers
       }
     }
 
+
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, BlocoDto model)
     {
          {
       try
       {
-          var bloco = await _blocoService.UpdateBloco(id, model);
+          var bloco = await _blocoService.UpdateBloco(User.GetUserId(),id, model);
           if(bloco == null) return NoContent();
 
           return Ok(bloco);
@@ -148,13 +156,14 @@ namespace ClassRoom.API.Controllers
     {
       try
       {
-        var bloco = await _blocoService.GetAllBlocoByIdAsync(id);
+        var bloco = await _blocoService.GetAllBlocoByIdAsync(User.GetUserId(), id);
         if(bloco == null) return NoContent();       
 
-        if (await _blocoService.DeleteBloco(id)) 
+        if (await _blocoService.DeleteBloco(User.GetUserId(), id))
         {
           DeleteImage(bloco.ImageURL);
-          return Ok(new {message = "Deletado"});
+          return Ok(new {message = "Deletado"}); 
+
         }
         else
         {
@@ -166,9 +175,9 @@ namespace ClassRoom.API.Controllers
           return this.StatusCode(StatusCodes.Status500InternalServerError, 
           $"Erro ao tentar deletar blocos. Erro {ex.Message}");
       }
-    }
+    }  
 
-     [NonAction]
+    [NonAction]
     public async Task<string> SaveImage(IFormFile imageFile)
     {
         string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName)
@@ -194,7 +203,7 @@ namespace ClassRoom.API.Controllers
       var imagePatch = Path.Combine(_hostEnvironment.ContentRootPath, @"Resources/images", imageName);
       if (System.IO.File.Exists(imagePatch))
           System.IO.File.Delete(imagePatch);
-    }  
+    }
   }
 }
 

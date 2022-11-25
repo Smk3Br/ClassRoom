@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import { Observable, take } from 'rxjs';
@@ -8,7 +8,7 @@ import { Bloco } from '../models/Bloco';
   providedIn: 'root'
 })
 export class BlocoService {
-  baseURL = environment.apiURL + 'api/Blocos'
+  baseURL = environment.apiURL + 'api/Blocos';
 
   constructor(private http: HttpClient) { }
 
